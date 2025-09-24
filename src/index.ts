@@ -41,3 +41,4 @@ export default apiKeyMiddleware
 export * from './types'
 export * from './manager'
 export * from './adapters/memory'
+export * from './adapters/kv'

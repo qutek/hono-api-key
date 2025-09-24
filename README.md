@@ -76,7 +76,37 @@ Records are ISO-string based and sanitized variants omit the `key` field.
 
 ## Adapters
 
-Current: `MemoryAdapter` (`src/adapters/memory.ts`).
+Built-in:
+
+- `MemoryAdapter` (`src/adapters/memory.ts`)
+- `KvAdapter` (`src/adapters/kv.ts`) – Cloudflare KV
+
+Use Cloudflare KV (Cloudflare Workers):
+
+```ts
+import { Hono } from 'hono'
+import { apiKeyMiddleware, ApiKeyManager, KvAdapter } from 'hono-api-key'
+
+type Env = { KV: KVNamespace }
+
+const app = new Hono<{ Bindings: Env; Variables: { apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>> } }>()
+
+app.use('*', (c, next) => {
+  // Create the manager per request (or share if desired)
+  const manager = new ApiKeyManager({ adapter: new KvAdapter(c.env.KV, 'apikey:') })
+  c.set('manager', manager)
+  return next()
+})
+
+app.use('*', (c, next) => apiKeyMiddleware(c.get('manager'))(c, next))
+
+app.get('/secure', (c) => c.text('ok'))
+```
+
+Notes:
+
+- The second argument `'apikey:'` is an optional namespace prefix for keys stored in KV.
+- KV is eventually consistent; avoid relying on strict atomic updates across multiple keys.
 
 Create your own by implementing `StorageAdapter` from `src/types.ts` and pass it to `ApiKeyManager`.
 
