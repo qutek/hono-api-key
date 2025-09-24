@@ -22,7 +22,7 @@ export class MemoryAdapter implements StorageAdapter {
 
   async getKeyByValue(keyValue: string): Promise<ApiKeyRecord | null> {
     const id = this.keyValueToId.get(keyValue)
-    return id ? this.keysById.get(id) ?? null : null
+    return id ? (this.keysById.get(id) ?? null) : null
   }
 
   async getKeysByownerId(ownerId: string): Promise<ApiKeyRecord[]> {
@@ -108,4 +108,3 @@ export function getMemoryAdapter(): MemoryAdapter {
 }
 
 export default MemoryAdapter
-

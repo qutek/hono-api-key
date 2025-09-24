@@ -1,9 +1,4 @@
-import type {
-  ApiKeyRecord,
-  RateLimitConfig,
-  SanitizedApiKeyRecord,
-  StorageAdapter,
-} from './types'
+import type { ApiKeyRecord, RateLimitConfig, SanitizedApiKeyRecord, StorageAdapter } from './types'
 
 export type ApiKeyManagerOptions = {
   adapter: StorageAdapter
@@ -42,7 +37,14 @@ export class ApiKeyManager {
     expiresAt?: Date | string | null
     metadata?: Record<string, unknown>
   }): Promise<ApiKeyRecord> {
-    const { ownerId, name, permissions = {}, rateLimit = null, expiresAt = null, metadata = {} } = options
+    const {
+      ownerId,
+      name,
+      permissions = {},
+      rateLimit = null,
+      expiresAt = null,
+      metadata = {},
+    } = options
     if (!ownerId) throw new Error('Owner Id is required')
     if (!name) throw new Error('API key name is required')
 
@@ -71,7 +73,9 @@ export class ApiKeyManager {
   async getKeys(ownerId: string, includeKey: boolean = false): Promise<SanitizedApiKeyRecord[]> {
     if (!ownerId) throw new Error('Owner Id is required')
     const keys = await this.adapter.getKeysByownerId(ownerId)
-    return keys.map(({ key: _hidden, ...rest }) => (includeKey ? { ...rest, key: _hidden } : rest)) as any
+    return keys.map(({ key: _hidden, ...rest }) =>
+      includeKey ? { ...rest, key: _hidden } : rest,
+    ) as any
   }
 
   async getKeyById(keyId: string, ownerId?: string): Promise<SanitizedApiKeyRecord | null> {
@@ -86,7 +90,12 @@ export class ApiKeyManager {
   async updateKey(
     keyId: string,
     ownerId: string,
-    updates: Partial<Pick<ApiKeyRecord, 'name' | 'isActive' | 'permissions' | 'expiresAt' | 'metadata' | 'rateLimit'>>,
+    updates: Partial<
+      Pick<
+        ApiKeyRecord,
+        'name' | 'isActive' | 'permissions' | 'expiresAt' | 'metadata' | 'rateLimit'
+      >
+    >,
   ): Promise<SanitizedApiKeyRecord | null> {
     if (!keyId) throw new Error('API key ID is required')
     if (!ownerId) throw new Error('Owner Id is required')
@@ -130,7 +139,10 @@ export class ApiKeyManager {
     if (apiKey.expiresAt && new Date(apiKey.expiresAt) < new Date()) return null
 
     const now = new Date()
-    await this.adapter.updateKey(apiKey.id, { ...apiKey, lastUsedAt: now.toISOString() })
+    await this.adapter.updateKey(apiKey.id, {
+      ...apiKey,
+      lastUsedAt: now.toISOString(),
+    })
     const { key: _hidden, ...rest } = apiKey
     return rest
   }
@@ -143,4 +155,3 @@ export class ApiKeyManager {
 }
 
 export default ApiKeyManager
-

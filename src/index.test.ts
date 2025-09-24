@@ -46,4 +46,3 @@ describe('apiKey middleware', () => {
     expect(res.status).toBe(401)
   })
 })
-

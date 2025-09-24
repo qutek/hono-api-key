@@ -28,4 +28,3 @@ export interface StorageAdapter {
   deleteKey(keyId: string): Promise<boolean>
   checkRateLimit(keyId: string, rateLimit: RateLimitConfig): Promise<boolean>
 }
-

@@ -26,7 +26,9 @@
     "test:watch": "vitest",
     "changeset": "changeset",
     "release": "pnpm build && changeset publish",
-    "examples:basic": "tsx examples/basic.ts"
+    "examples:basic": "tsx examples/basic.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [
     "hono",
@@ -55,7 +57,8 @@
     "tsx": "^4.19.1",
     "tsup": "^8.2.4",
     "typescript": "^5.6.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "prettier": "^3.3.3"
   },
   "peerDependencies": {
     "hono": ">=4.0.0"

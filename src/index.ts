@@ -1,6 +1,6 @@
 import type { MiddlewareHandler } from 'hono'
 import type ApiKeyManager from './manager'
-import { HTTPException } from "hono/http-exception";
+import { HTTPException } from 'hono/http-exception'
 
 export function apiKeyMiddleware(
   manager: ApiKeyManager,
@@ -32,9 +32,7 @@ export function apiKeyMiddleware(
   }
 }
 
-export type ApiKeyInfo = ApiKeyManager['validateKey'] extends (
-  ...args: any
-) => Promise<infer T>
+export type ApiKeyInfo = ApiKeyManager['validateKey'] extends (...args: any) => Promise<infer T>
   ? T
   : never
 

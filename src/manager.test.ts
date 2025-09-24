@@ -28,4 +28,3 @@ describe('ApiKeyManager', () => {
     expect(deleted).toBe(true)
   })
 })
-
