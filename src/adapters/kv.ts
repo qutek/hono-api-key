@@ -117,9 +117,10 @@ export class KvAdapter implements StorageAdapter {
   async checkRateLimit(keyId: string, rateLimit: RateLimitConfig): Promise<boolean> {
     const now = Date.now()
     const key = this.keyForRate(keyId)
-    const state = (JSON.parse((await this.kv.get(key)) || 'null') as
-      | { requests: number[]; windowStart: number }
-      | null) ?? { requests: [], windowStart: now }
+    const state = (JSON.parse((await this.kv.get(key)) || 'null') as {
+      requests: number[]
+      windowStart: number
+    } | null) ?? { requests: [], windowStart: now }
 
     const windowMs = rateLimit.windowMs
     const maxRequests = rateLimit.maxRequests
@@ -142,4 +143,3 @@ export class KvAdapter implements StorageAdapter {
 }
 
 export default KvAdapter
-

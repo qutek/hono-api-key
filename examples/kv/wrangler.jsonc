@@ -1,0 +1,6 @@
+{
+  "name": "hono-api-key-kv-example",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-11",
+  "kv_namespaces": [{ "binding": "KV", "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }],
+}

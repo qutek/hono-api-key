@@ -73,5 +73,3 @@ describe('KvAdapter', () => {
     expect(ok2).toBe(false)
   })
 })
-
-

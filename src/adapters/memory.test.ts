@@ -59,5 +59,3 @@ describe('MemoryAdapter', () => {
     expect(await adapter.getKeyById('id-1')).toBeNull()
   })
 })
-
-

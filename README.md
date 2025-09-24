@@ -89,7 +89,13 @@ import { apiKeyMiddleware, ApiKeyManager, KvAdapter } from 'hono-api-key'
 
 type Env = { KV: KVNamespace }
 
-const app = new Hono<{ Bindings: Env; Variables: { apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>> } }>()
+const app = new Hono<{
+  Bindings: Env
+  Variables: {
+    apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>>
+    manager: ApiKeyManager
+  }
+}>()
 
 app.use('*', (c, next) => {
   // Create the manager per request (or share if desired)
@@ -98,8 +104,25 @@ app.use('*', (c, next) => {
   return next()
 })
 
-app.use('*', (c, next) => apiKeyMiddleware(c.get('manager'))(c, next))
+// Protect only what you need (e.g., /secure/*)
+app.use('/secure/*', (c, next) => apiKeyMiddleware(c.get('manager'))(c, next))
 
+// Unprotected: create an API key
+app.post('/create-api-key', async (c) => {
+  const body = (await c.req.json().catch(() => ({}))) as {
+    ownerId?: string
+    name?: string
+    rateLimit?: { windowMs: number; maxRequests: number } | null
+  }
+  const key = await c.get('manager').createKey({
+    ownerId: body.ownerId ?? 'demo-owner',
+    name: body.name ?? 'demo',
+    rateLimit: body.rateLimit ?? null,
+  })
+  return c.json(key)
+})
+
+// Protected
 app.get('/secure', (c) => c.text('ok'))
 ```
 
@@ -108,16 +131,40 @@ Notes:
 - The second argument `'apikey:'` is an optional namespace prefix for keys stored in KV.
 - KV is eventually consistent; avoid relying on strict atomic updates across multiple keys.
 
+Run the KV example locally:
+
+```bash
+# Create and configure a KV namespace (copy its id into examples/kv/wrangler.jsonc)
+pnpm wrangler kv namespace create KV
+
+# Start the example Worker
+pnpm run examples:kv
+
+# Create a key
+curl -X POST http://127.0.0.1:8787/create-api-key
+
+# Use the key (query)
+curl "http://127.0.0.1:8787/secure?api_key=YOUR_KEY"
+
+# Or with header
+curl -H "x-api-key: YOUR_KEY" http://127.0.0.1:8787/secure
+```
+
 Create your own by implementing `StorageAdapter` from `src/types.ts` and pass it to `ApiKeyManager`.
 
 ## Examples
 
-- `examples/basic.ts` – runnable Node server with `@hono/node-server`
+- `examples/basic.ts` – Node server with `@hono/node-server`
+- `examples/kv/` – Cloudflare Workers KV example (Wrangler)
 
 Scripts:
 
 ```bash
+# Node example
 pnpm run examples:basic
+
+# Cloudflare KV example (make sure wrangler is logged in and KV id is set)
+pnpm run examples:kv
 ```
 
 ## Development
