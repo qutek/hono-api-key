@@ -150,12 +150,75 @@ curl "http://127.0.0.1:8787/secure?api_key=YOUR_KEY"
 curl -H "x-api-key: YOUR_KEY" http://127.0.0.1:8787/secure
 ```
 
+### Redis Adapter
+
+For Node.js applications, use the Redis adapter:
+
+```typescript
+import { Hono } from 'hono'
+import { serve } from '@hono/node-server'
+import { apiKeyMiddleware, ApiKeyManager, RedisAdapter } from 'hono-api-key'
+import Redis from 'ioredis'
+
+const app = new Hono<{
+  Variables: {
+    apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>>
+    manager: ApiKeyManager
+  }
+}>()
+
+// Initialize Redis connection
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379')
+
+app.use('*', async (c, next) => {
+  const manager = new ApiKeyManager({ adapter: new RedisAdapter(redis, 'apikey:') })
+  c.set('manager', manager)
+  return next()
+})
+
+// Protect routes
+app.use('/secure/*', (c, next) => apiKeyMiddleware(c.get('manager'))(c, next))
+
+// Create API key
+app.post('/create-api-key', async (c) => {
+  const body = await c.req.json()
+  const key = await c.get('manager').createKey({
+    ownerId: body.ownerId ?? 'demo-owner',
+    name: body.name ?? 'demo',
+    rateLimit: body.rateLimit ?? null,
+  })
+  return c.json(key)
+})
+
+// Protected route
+app.get('/secure', (c) => c.json({ ok: true, info: c.get('apiKey') }))
+
+serve({ fetch: app.fetch, port: 3000 })
+```
+
+Run the Redis example:
+
+```bash
+# Start Redis (Docker)
+docker run -p 6379:6379 redis:alpine
+
+# Run the example
+pnpm run examples:redis
+
+# Create a key
+curl -X POST http://localhost:3000/create-api-key
+
+# Use the key
+curl "http://localhost:3000/secure?api_key=YOUR_KEY"
+```
+
 Create your own by implementing `StorageAdapter` from `src/types.ts` and pass it to `ApiKeyManager`.
 
 ## Examples
 
 - `examples/basic.ts` – Node server with `@hono/node-server`
 - `examples/kv/` – Cloudflare Workers KV example (Wrangler)
+- `examples/redis/` – Redis adapter example with Node.js
 
 Scripts:
 
@@ -165,6 +228,9 @@ pnpm run examples:basic
 
 # Cloudflare KV example (make sure wrangler is logged in and KV id is set)
 pnpm run examples:kv
+
+# Redis example (make sure Redis is running)
+pnpm run examples:redis
 ```
 
 ## Development

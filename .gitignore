@@ -6,3 +6,4 @@ coverage
 .turbo
 .changeset/cache
 .wrangler
+.dev.vars

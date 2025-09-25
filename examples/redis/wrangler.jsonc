@@ -1,0 +1,6 @@
+{
+  "name": "hono-api-key-redis-example",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-11",
+  "compatibility_flags": ["nodejs_compat"],
+}
