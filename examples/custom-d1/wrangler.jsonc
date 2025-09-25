@@ -1,0 +1,14 @@
+{
+  "name": "hono-api-key-d1-example",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-09-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "hono-api-key-d1-example",
+      "database_id": "your-d1-database-id",
+      "migrations_dir": "migrations",
+    },
+  ],
+}

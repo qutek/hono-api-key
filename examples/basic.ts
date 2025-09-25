@@ -15,7 +15,7 @@ async function main() {
 
   // Create a demo key
   const created = await manager.createKey({
-    ownerId: 'machine-1',
+    ownerId: 'owner-1',
     name: 'demo',
   });
 

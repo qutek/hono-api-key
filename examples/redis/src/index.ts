@@ -22,7 +22,7 @@ app.use('*', async (c, next) => {
 
   const manager = new ApiKeyManager({
     adapter: new RedisAdapter(redis, 'apikey:'),
-    prefix: 'key_',
+    prefix: 'redis_',
     keyLength: 12,
     rateLimit: { windowMs: 60_000, maxRequests: 10 },
   });
@@ -50,13 +50,13 @@ app.post('/create-api-key', async (c) => {
 });
 
 // Protected page
-app.get('/secure', (c) => {
+app.all('/secure', (c) => {
   return c.json({ ok: true, info: c.get('apiKey') });
 });
 
 app.get('/', (c) => {
   const lines = [
-    'hono-api-key KV example',
+    'hono-api-key Redis example',
     '',
     '1) Create a key:',
     '   curl -X POST http://127.0.0.1:8787/create-api-key',

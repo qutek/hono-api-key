@@ -1,24 +1,20 @@
 import { Hono } from 'hono';
-import { apiKeyMiddleware, ApiKeyManager, KvAdapter } from '../../../src';
+import { apiKeyMiddleware, ApiKeyManager } from '../../../src';
+import { Environment } from '../bindings';
+import { contextStorage } from 'hono/context-storage';
+import DatabaseAdapter from './utils/adapter-database';
 
-type Env = {
-  KV: {
-    get: (k: string) => Promise<string | null>;
-    put: (k: string, v: string) => Promise<void>;
-    delete: (k: string) => Promise<void>;
-  };
-};
+const app = new Hono<Environment>();
 
-const app = new Hono<{
-  Bindings: Env;
-  Variables: {
-    apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>>;
-    manager: ApiKeyManager;
-  };
-}>();
+app.use(contextStorage());
 
 app.use('*', async (c, next) => {
-  const manager = new ApiKeyManager({ adapter: new KvAdapter(c.env.KV, 'apikey:'), prefix: 'kv_' });
+  const manager = new ApiKeyManager({
+    adapter: new DatabaseAdapter(),
+    prefix: 'db_',
+    keyLength: 12,
+    rateLimit: { windowMs: 60_000, maxRequests: 10 },
+  });
   c.set('manager', manager);
   return next();
 });
@@ -49,7 +45,7 @@ app.all('/secure', (c) => {
 
 app.get('/', (c) => {
   const lines = [
-    'hono-api-key KV example',
+    'hono-api-key Drizzle D1 example',
     '',
     '1) Create a key:',
     '   curl -X POST http://127.0.0.1:8787/create-api-key',
