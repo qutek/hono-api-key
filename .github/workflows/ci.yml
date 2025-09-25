@@ -29,15 +29,15 @@ jobs:
 
       - name: Lint
         run: |
-          if pnpm run -r lint; then
+          if pnpm lint; then
             echo "lint passed"
           else
             echo "no lint script or lint failed" && exit 1
           fi
         continue-on-error: true
 
-      - name: Build
-        run: pnpm build
-
       - name: Test
         run: pnpm test
+
+      - name: Build
+        run: pnpm build
