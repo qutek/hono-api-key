@@ -7,6 +7,10 @@ export type RedisClient = {
   sadd(key: string, member: string): Promise<number>;
   srem(key: string, member: string): Promise<number>;
   smembers(key: string): Promise<string[]>;
+  // Optional but used when available for efficiency
+  mget?: (...keys: string[]) => Promise<(string | null)[]>;
+  incr: (key: string) => Promise<number>;
+  expire: (key: string, seconds: number) => Promise<number | 'OK' | null>;
 };
 
 export class RedisAdapter implements StorageAdapter {
@@ -22,7 +26,8 @@ export class RedisAdapter implements StorageAdapter {
   private idKey = (id: string) => `${this.ns()}id:${id}`;
   private valueKey = (val: string) => `${this.ns()}value:${val}`;
   private ownerKey = (ownerId: string) => `${this.ns()}owner:${ownerId}`;
-  private rateKey = (id: string) => `${this.ns()}rate:${id}`;
+  // Keep hash tag to co-locate keys in the same cluster slot
+  private rateKeyBucket = (id: string, bucket: number) => `${this.ns()}rate:{${id}}:${bucket}`;
 
   async saveKey(apiKey: ApiKeyRecord): Promise<ApiKeyRecord> {
     await Promise.all([
@@ -56,11 +61,16 @@ export class RedisAdapter implements StorageAdapter {
   async getKeysByownerId(ownerId: string): Promise<ApiKeyRecord[]> {
     const ids = (await this.redis.smembers(this.ownerKey(ownerId))) || [];
     if (!ids.length) return [];
-    const records = await Promise.all(ids.map((id) => this.redis.get(this.idKey(id))));
-    return records.filter(Boolean).map((data) => {
-      if (typeof data === 'string') {
-        return JSON.parse(data) as ApiKeyRecord;
-      }
+    const idKeys = ids.map((id) => this.idKey(id));
+    let raw: (string | object | null)[];
+    if (this.redis.mget) {
+      const m = await this.redis.mget(...idKeys);
+      raw = m as (string | null)[];
+    } else {
+      raw = await Promise.all(idKeys.map((k) => this.redis.get(k)));
+    }
+    return raw.filter(Boolean).map((data) => {
+      if (typeof data === 'string') return JSON.parse(data) as ApiKeyRecord;
       return data as ApiKeyRecord;
     });
   }
@@ -88,42 +98,20 @@ export class RedisAdapter implements StorageAdapter {
       this.redis.del(this.idKey(keyId)),
       this.redis.del(this.valueKey(existing.key)),
       this.redis.srem(this.ownerKey(existing.ownerId), keyId),
-      this.redis.del(this.rateKey(keyId)),
     ]);
     return true;
   }
 
   async checkRateLimit(keyId: string, rateLimit: RateLimitConfig): Promise<boolean> {
-    const now = Date.now();
-    const key = this.rateKey(keyId);
-    const data = await this.redis.get(key);
-
-    let state: { requests: number[]; windowStart: number } | null = null;
-    if (data) {
-      if (typeof data === 'string') {
-        state = JSON.parse(data) as { requests: number[]; windowStart: number };
-      } else {
-        state = data as { requests: number[]; windowStart: number };
-      }
-    }
-
-    if (!state) {
-      state = { requests: [], windowStart: now };
-    }
-
     const { windowMs, maxRequests } = rateLimit;
-    if (now - state.windowStart > windowMs) {
-      state.requests = [];
-      state.windowStart = now;
+    const bucket = Math.floor(Date.now() / windowMs);
+    const key = this.rateKeyBucket(keyId, bucket);
+    const count = await this.redis.incr(key);
+    if (count === 1) {
+      // first hit in window, set TTL
+      await this.redis.expire(key, Math.ceil(windowMs / 1000));
     }
-    state.requests = state.requests.filter((t) => now - t < windowMs);
-    if (state.requests.length >= maxRequests) {
-      await this.redis.set(key, JSON.stringify(state));
-      return false;
-    }
-    state.requests.push(now);
-    await this.redis.set(key, JSON.stringify(state));
-    return true;
+    return count <= maxRequests;
   }
 }
 

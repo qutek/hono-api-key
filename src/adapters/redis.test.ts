@@ -45,6 +45,24 @@ class MockRedis implements RedisClient {
     return set ? Array.from(set) : [];
   }
 
+  // Optional/extra commands used by adapter
+  async mget(...keys: string[]): Promise<(string | null)[]> {
+    return keys.map((k) => this.data.get(k) ?? null);
+  }
+
+  async incr(key: string): Promise<number> {
+    const curr = this.data.get(key);
+    const n = curr ? parseInt(curr, 10) : 0;
+    const next = n + 1;
+    this.data.set(key, String(next));
+    return next;
+  }
+
+  async expire(_key: string, _seconds: number): Promise<number> {
+    // no-op in mock
+    return 1;
+  }
+
   clear() {
     this.data.clear();
     this.sets.clear();
