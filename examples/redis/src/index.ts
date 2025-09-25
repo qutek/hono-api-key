@@ -1,20 +1,24 @@
 import { Hono } from 'hono'
 import { apiKeyMiddleware, ApiKeyManager, RedisAdapter } from '../../../src'
 import { Environment } from '../bindings'
+import { contextStorage } from 'hono/context-storage'
 
 import { Redis } from '@upstash/redis'
-import { contextStorage } from 'hono/context-storage'
+// import Redis from 'ioredis'
 
 const app = new Hono<Environment>()
 
 app.use(contextStorage())
 
 app.use('*', async (c, next) => {
-  // we use upstash redis
+  // use upstash redis
   const redis = new Redis({
     url: c.env.UPSTASH_REDIS_REST_URL,
     token: c.env.UPSTASH_REDIS_REST_TOKEN,
   })
+
+  // or use with ioredis
+  // const redis = new Redis(c.env.REDIS_URL);
 
   const manager = new ApiKeyManager({
     adapter: new RedisAdapter(redis, 'apikey:'),
