@@ -1,7 +1,7 @@
 {
   "name": "hono-api-key",
   "version": "0.0.0",
-  "description": "Hono middleware to validate API keys via header, query, or custom adapter.",
+  "description": "Secure, flexible API key middleware and manager for Hono.",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -38,7 +38,7 @@
     "api-key",
     "security"
   ],
-  "author": "",
+  "author": "Lafif Astahdziq <hello@lafif.me> (https://lafif.me)",
   "license": "MIT",
   "repository": {
     "type": "git",
