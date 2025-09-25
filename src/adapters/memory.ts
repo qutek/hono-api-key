@@ -47,13 +47,13 @@ export class MemoryAdapter implements StorageAdapter {
     }
     this.keyValueToId.set(updatedKey.key, keyId);
 
-    if ((existing as any).ownerId !== (updatedKey as any).ownerId) {
-      const prevSet = this.ownerIdToKeyIds.get((existing as any).ownerId);
+    if (existing.ownerId !== updatedKey.ownerId) {
+      const prevSet = this.ownerIdToKeyIds.get(existing.ownerId);
       prevSet?.delete(keyId);
-      if (!this.ownerIdToKeyIds.has((updatedKey as any).ownerId)) {
-        this.ownerIdToKeyIds.set((updatedKey as any).ownerId, new Set());
+      if (!this.ownerIdToKeyIds.has(updatedKey.ownerId)) {
+        this.ownerIdToKeyIds.set(updatedKey.ownerId, new Set());
       }
-      this.ownerIdToKeyIds.get((updatedKey as any).ownerId)!.add(keyId);
+      this.ownerIdToKeyIds.get(updatedKey.ownerId)!.add(keyId);
     }
 
     return updatedKey;
@@ -64,9 +64,9 @@ export class MemoryAdapter implements StorageAdapter {
     if (!existing) return false;
     this.keysById.delete(keyId);
     this.keyValueToId.delete(existing.key);
-    const set = this.ownerIdToKeyIds.get((existing as any).ownerId);
+    const set = this.ownerIdToKeyIds.get(existing.ownerId);
     set?.delete(keyId);
-    if (set && set.size === 0) this.ownerIdToKeyIds.delete((existing as any).ownerId);
+    if (set && set.size === 0) this.ownerIdToKeyIds.delete(existing.ownerId);
     this.rateLimits.delete(keyId);
     return true;
   }

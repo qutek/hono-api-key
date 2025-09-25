@@ -8,7 +8,14 @@ export default defineConfig({
       enabled: true,
       reporter: ['text', 'html'],
       provider: 'v8',
-      exclude: ['examples/**', 'dist/**', '**/*.config.*', 'vitest.config.ts', 'tsup.config.ts'],
+      exclude: [
+        'examples/**',
+        'dist/**',
+        '**/*.config.*',
+        'vitest.config.ts',
+        'tsup.config.ts',
+        '.eslintrc.cjs',
+      ],
     },
   },
 });

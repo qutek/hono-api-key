@@ -70,19 +70,23 @@ export class ApiKeyManager {
     return record;
   }
 
-  async getKeys(ownerId: string, includeKey: boolean = false): Promise<SanitizedApiKeyRecord[]> {
+  async getKeys(
+    ownerId: string,
+    includeKey: boolean = false,
+  ): Promise<SanitizedApiKeyRecord[] | (SanitizedApiKeyRecord & { key: string })[]> {
     if (!ownerId) throw new Error('Owner Id is required');
     const keys = await this.adapter.getKeysByownerId(ownerId);
-    return keys.map(({ key: _hidden, ...rest }) =>
-      includeKey ? { ...rest, key: _hidden } : rest,
-    ) as any;
+    const mapped = keys.map(({ key, ...rest }) => (includeKey ? { ...rest, key } : rest));
+    return includeKey
+      ? (mapped as (SanitizedApiKeyRecord & { key: string })[])
+      : (mapped as SanitizedApiKeyRecord[]);
   }
 
   async getKeyById(keyId: string, ownerId?: string): Promise<SanitizedApiKeyRecord | null> {
     if (!keyId) throw new Error('API key ID is required');
     const key = await this.adapter.getKeyById(keyId);
     if (!key) return null;
-    if (ownerId && (key as any).ownerId !== ownerId) return null;
+    if (ownerId && key.ownerId !== ownerId) return null;
     const { key: _hidden, ...rest } = key;
     return rest;
   }
@@ -102,14 +106,14 @@ export class ApiKeyManager {
 
     const existing = await this.adapter.getKeyById(keyId);
     if (!existing) return null;
-    if ((existing as any).ownerId !== ownerId) return null;
+    if (existing.ownerId !== ownerId) return null;
 
     const updated: ApiKeyRecord = {
       ...existing,
       ...updates,
       id: existing.id,
       key: existing.key,
-      ownerId: (existing as any).ownerId,
+      ownerId: existing.ownerId,
       createdAt: existing.createdAt,
     };
     if (updates.expiresAt) {
@@ -127,7 +131,7 @@ export class ApiKeyManager {
     if (!ownerId) throw new Error('Owner Id is required');
     const existing = await this.adapter.getKeyById(keyId);
     if (!existing) return false;
-    if ((existing as any).ownerId !== ownerId) return false;
+    if (existing.ownerId !== ownerId) return false;
     return this.adapter.deleteKey(keyId);
   }
 

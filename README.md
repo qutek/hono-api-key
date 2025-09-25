@@ -20,15 +20,15 @@ pnpm add hono-api-key
 ## Quick Start (Node)
 
 ```ts
-import { Hono } from 'hono'
-import { apiKeyMiddleware, ApiKeyManager, MemoryAdapter } from 'hono-api-key'
+import { Hono } from 'hono';
+import { apiKeyMiddleware, ApiKeyManager, MemoryAdapter } from 'hono-api-key';
 
-const manager = new ApiKeyManager({ adapter: new MemoryAdapter() })
-const created = await manager.createKey({ ownerId: 'owner-1', name: 'demo' })
+const manager = new ApiKeyManager({ adapter: new MemoryAdapter() });
+const created = await manager.createKey({ ownerId: 'owner-1', name: 'demo' });
 
-const app = new Hono<{ Variables: { apiKey: Awaited<ReturnType<typeof manager.validateKey>> } }>()
-app.use('*', apiKeyMiddleware(manager))
-app.get('/secure', (c) => c.text(`hello ${c.get('apiKey')?.name}`))
+const app = new Hono<{ Variables: { apiKey: Awaited<ReturnType<typeof manager.validateKey>> } }>();
+app.use('*', apiKeyMiddleware(manager));
+app.get('/secure', (c) => c.text(`hello ${c.get('apiKey')?.name}`));
 
 // client: set header 'x-api-key: ' + created.key
 ```
@@ -53,8 +53,8 @@ apiKeyMiddleware(
 Helper for typing app Variables:
 
 ```ts
-type ApiKeyInfo = Awaited<ReturnType<ApiKeyManager['validateKey']>>
-const app = new Hono<{ Variables: { apiKey: ApiKeyInfo } }>()
+type ApiKeyInfo = Awaited<ReturnType<ApiKeyManager['validateKey']>>;
+const app = new Hono<{ Variables: { apiKey: ApiKeyInfo } }>();
 ```
 
 ## Manager API
@@ -73,7 +73,7 @@ Records use ISO strings, sanitized variants omit `key`.
 
 Built-in:
 
-- `MemoryAdapter` – in-memory; great for tests/dev
+- `MemoryAdapter` – in-memory, great for tests/dev
 - `KvAdapter` – Cloudflare Workers KV
 - `RedisAdapter` – Redis client-agnostic using a minimal `RedisClient` interface
 
@@ -82,19 +82,22 @@ Implement your own by conforming to `StorageAdapter` in `src/types.ts` and pass 
 ### Cloudflare KV (Workers)
 
 ```ts
-import { Hono } from 'hono'
-import { apiKeyMiddleware, ApiKeyManager, KvAdapter } from 'hono-api-key'
+import { Hono } from 'hono';
+import { apiKeyMiddleware, ApiKeyManager, KvAdapter } from 'hono-api-key';
 
-type Env = { KV: KVNamespace }
-const app = new Hono<{ Bindings: Env; Variables: { apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>>; manager: ApiKeyManager } }>()
+type Env = { KV: KVNamespace };
+const app = new Hono<{
+  Bindings: Env;
+  Variables: { apiKey: Awaited<ReturnType<ApiKeyManager['validateKey']>>; manager: ApiKeyManager };
+}>();
 
 app.use('*', (c, next) => {
-  const manager = new ApiKeyManager({ adapter: new KvAdapter(c.env.KV, 'apikey:') })
-  c.set('manager', manager)
-  return next()
-})
+  const manager = new ApiKeyManager({ adapter: new KvAdapter(c.env.KV, 'apikey:') });
+  c.set('manager', manager);
+  return next();
+});
 
-app.use('/secure/*', (c, n) => apiKeyMiddleware(c.get('manager'))(c, n))
+app.use('/secure/*', (c, n) => apiKeyMiddleware(c.get('manager'))(c, n));
 ```
 
 KV example is in `examples/kv/` with Wrangler configs and routes.
@@ -102,11 +105,14 @@ KV example is in `examples/kv/` with Wrangler configs and routes.
 ### Redis (Node or Workers with Upstash / ioredis)
 
 ```ts
-import { Redis } from '@upstash/redis'
-import { apiKeyMiddleware, ApiKeyManager, RedisAdapter } from 'hono-api-key'
+import { Redis } from '@upstash/redis';
+import { apiKeyMiddleware, ApiKeyManager, RedisAdapter } from 'hono-api-key';
 
-const redis = new Redis({ url: process.env.UPSTASH_REDIS_REST_URL!, token: process.env.UPSTASH_REDIS_REST_TOKEN! })
-const manager = new ApiKeyManager({ adapter: new RedisAdapter(redis, 'apikey:') })
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
+const manager = new ApiKeyManager({ adapter: new RedisAdapter(redis, 'apikey:') });
 ```
 
 Redis example is in `examples/redis/` and supports Upstash or ioredis.
@@ -144,6 +150,7 @@ pnpm changeset      # create a changeset
 ## Author
 
 Lafif Astahdziq (<https://lafif.me>)
+
 ## License
 
 MIT

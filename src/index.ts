@@ -23,7 +23,7 @@ export function apiKeyMiddleware(
     c.set('apiKey', keyInfo);
 
     if (!options?.rateLimitBypass) {
-      const ok = await manager.checkRateLimit(keyInfo.id, (keyInfo as any).rateLimit ?? undefined);
+      const ok = await manager.checkRateLimit(keyInfo.id, keyInfo.rateLimit ?? undefined);
       if (!ok) throw new HTTPException(429, { message: 'Rate limit exceeded' });
     }
 
@@ -32,7 +32,9 @@ export function apiKeyMiddleware(
   };
 }
 
-export type ApiKeyInfo = ApiKeyManager['validateKey'] extends (...args: any) => Promise<infer T>
+export type ApiKeyInfo = ApiKeyManager['validateKey'] extends (
+  ...args: unknown[]
+) => Promise<infer T>
   ? T
   : never;
 

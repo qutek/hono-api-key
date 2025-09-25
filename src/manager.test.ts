@@ -13,7 +13,7 @@ describe('ApiKeyManager', () => {
 
     const listed = await manager.getKeys('m1');
     expect(listed.length).toBe(1);
-    expect((listed[0] as any).key).toBeUndefined();
+    expect('key' in listed[0]).toBe(false);
 
     const validated = await manager.validateKey(created.key);
     expect(validated?.id).toBe(created.id);

@@ -31,7 +31,7 @@ export class KvAdapter implements StorageAdapter {
   async saveKey(apiKey: ApiKeyRecord): Promise<ApiKeyRecord> {
     const idKey = this.keyForId(apiKey.id);
     const valueKey = this.keyForValue(apiKey.key);
-    const ownerKey = this.keyForOwner((apiKey as any).ownerId);
+    const ownerKey = this.keyForOwner(apiKey.ownerId);
 
     await Promise.all([
       this.kv.put(idKey, JSON.stringify(apiKey)),
@@ -79,8 +79,8 @@ export class KvAdapter implements StorageAdapter {
     }
 
     // Update owner mapping if owner changed
-    const existingOwner = (existing as any).ownerId;
-    const newOwner = (updatedKey as any).ownerId;
+    const existingOwner = existing.ownerId;
+    const newOwner = updatedKey.ownerId;
     if (existingOwner !== newOwner) {
       const oldOwnerKey = this.keyForOwner(existingOwner);
       const oldList = new Set<string>(JSON.parse((await this.kv.get(oldOwnerKey)) || '[]'));
@@ -104,7 +104,7 @@ export class KvAdapter implements StorageAdapter {
       this.kv.delete(this.keyForId(keyId)),
       this.kv.delete(this.keyForValue(existing.key)),
       (async () => {
-        const ownerKey = this.keyForOwner((existing as any).ownerId);
+        const ownerKey = this.keyForOwner(existing.ownerId);
         const list = new Set<string>(JSON.parse((await this.kv.get(ownerKey)) || '[]'));
         list.delete(keyId);
         await this.kv.put(ownerKey, JSON.stringify(Array.from(list)));

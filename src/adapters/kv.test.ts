@@ -37,7 +37,7 @@ function sampleRecord(overrides: Partial<ApiKeyRecord> = {}): ApiKeyRecord {
 describe('KvAdapter', () => {
   it('saves, reads, lists, updates, deletes', async () => {
     const kv = createMockKV();
-    const adapter = new KvAdapter(kv as any, 'test:');
+    const adapter = new KvAdapter(kv, 'test:');
 
     const rec = sampleRecord();
     await adapter.saveKey(rec);
@@ -63,7 +63,7 @@ describe('KvAdapter', () => {
 
   it('rate limiting works within window', async () => {
     const kv = createMockKV();
-    const adapter = new KvAdapter(kv as any, 'test:');
+    const adapter = new KvAdapter(kv, 'test:');
     const rec = sampleRecord({ id: 'r1' });
     await adapter.saveKey(rec);
 
