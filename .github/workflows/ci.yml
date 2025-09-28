@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - "**"
+  # pull_request:
+  #   branches: [main]
 
 jobs:
   test:
@@ -55,3 +56,13 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # This will create a PR when there are changesets to release
+          title: "Version Packages"
+          commit: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

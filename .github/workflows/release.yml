@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+# make sure only one release job runs at a time
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   publish:
     name: Publish to NPM (tagged release)
@@ -45,7 +48,12 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Publish
-        run: pnpm release
+      - name: Create Release Pull Request or Publish to NPM
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # Call release script which does a build for your packages and calls changeset publish
+          publish: pnpm release
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
