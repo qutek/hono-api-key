@@ -1,6 +1,6 @@
 {
   "name": "hono-api-key",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Secure, flexible API key middleware and manager for Hono.",
   "type": "module",
   "main": "dist/index.cjs",
