@@ -1,17 +1,19 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 # make sure only one release job runs at a time
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   publish:
-    name: Publish to NPM (tagged release)
+    name: Publish to NPM (Version Packages PR merged)
     runs-on: ubuntu-latest
+    # Only run if the PR was merged (not closed)
+    if: github.event.pull_request.merged == true
     permissions:
       contents: write
     steps:
