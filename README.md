@@ -1,9 +1,21 @@
-# API Key Manager and Middleware for Hono 🔥
+<h1 align="center"> <code>API Key Manager and Middleware for Hono 🔥</code> </h1>
 
 Secure, flexible API key middleware and manager for Hono. Works in Node, Cloudflare Workers, and edge runtimes. Batteries included adapters (Memory, KV, Redis) and a clean `StorageAdapter` interface for custom backends.
 
+<div align="center">
+
+[![tests](https://img.shields.io/github/actions/workflow/status/qutek/hono-api-key/ci.yml)](https://github.com/qutek/hono-api-key/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/hono-api-key.svg)](https://www.npmjs.com/package/hono-api-key "View this project on NPM")
+[![Bundle Size](https://img.shields.io/bundlephobia/min/hono-api-key)](https://bundlephobia.com/result?p=hono-api-key)
+[![Bundle Size](https://img.shields.io/bundlephobia/minzip/hono-api-key)](https://bundlephobia.com/result?p=hono-api-key)
+[![license](https://img.shields.io/npm/l/hono-api-key)](LICENSE)
+<!-- [![npm downloads](https://img.shields.io/npm/dm/hono-api-key)](https://www.npmjs.com/package/hono-api-key) -->
+
+</div>
+
 ## Features
 
+- **Zero dependencies** - No external runtime dependencies
 - Middleware-first: `apiKeyMiddleware(manager, options?)`
 - Header (`x-api-key`) or query (`?api_key=`) auth
 - Optional rate limiting (per-key or default)
@@ -14,6 +26,13 @@ Secure, flexible API key middleware and manager for Hono. Works in Node, Cloudfl
 ## Install
 
 ```bash
+# npm
+npm install hono-api-key
+
+# yarn
+yarn add hono-api-key
+
+# pnpm
 pnpm add hono-api-key
 ```
 
