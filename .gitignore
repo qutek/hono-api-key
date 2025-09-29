@@ -7,3 +7,6 @@ coverage
 .changeset/cache
 .wrangler
 .dev.vars
+*.lock
+*.txt
+.env

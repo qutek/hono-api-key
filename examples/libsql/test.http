@@ -1,0 +1,11 @@
+POST http://127.0.0.1:3000/create-api-key
+Content-Type: application/json
+
+{
+  "ownerId": "demo-libsql",
+  "name": "libsql"
+}
+
+###
+
+GET http://127.0.0.1:3000/secure?api_key=db_c28c673fd18a12caa64e434c
