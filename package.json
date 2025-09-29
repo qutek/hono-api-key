@@ -1,11 +1,39 @@
 {
   "name": "hono-api-key",
-  "version": "0.1.2",
-  "description": "Secure, flexible API key middleware and manager for Hono.",
-  "type": "module",
+  "version": "0.0.0",
+  "author": "Lafif Astahdziq <hello@lafif.me> (https://lafif.me)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qutek/hono-api-key.git"
+  },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@changesets/cli": "^2.27.7",
+    "@hono/node-server": "^1.13.6",
+    "@types/node": "^22.7.5",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "@upstash/redis": "^1.35.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.5",
+    "eslint": "^9.12.0",
+    "eslint-config-prettier": "^9.1.0",
+    "hono": "^4.5.0",
+    "ioredis": "^5.8.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.2.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.8.1",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.39.0"
+  },
+  "peerDependencies": {
+    "hono": ">=4.0.0"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,10 +41,21 @@
       "require": "./dist/index.cjs"
     }
   },
+  "bugs": {
+    "url": "https://github.com/qutek/hono-api-key/issues"
+  },
+  "description": "Secure, flexible API key middleware and manager for Hono.",
   "files": [
     "dist"
   ],
-  "sideEffects": false,
+  "homepage": "https://github.com/qutek/hono-api-key#readme",
+  "keywords": [
+    "hono",
+    "middleware",
+    "api-key",
+    "security"
+  ],
+  "license": "MIT",
   "scripts": {
     "build": "tsup",
     "clean": "rimraf dist",
@@ -32,46 +71,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "keywords": [
-    "hono",
-    "middleware",
-    "api-key",
-    "security"
-  ],
-  "author": "Lafif Astahdziq <hello@lafif.me> (https://lafif.me)",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/qutek/hono-api-key.git"
-  },
-  "bugs": {
-    "url": "https://github.com/qutek/hono-api-key/issues"
-  },
-  "homepage": "https://github.com/qutek/hono-api-key#readme",
-  "devDependencies": {
-    "@changesets/cli": "^2.27.7",
-    "@hono/node-server": "^1.13.6",
-    "@types/node": "^22.7.5",
-    "@upstash/redis": "^1.35.4",
-    "@vitest/coverage-v8": "^3.2.4",
-    "drizzle-kit": "^0.31.4",
-    "drizzle-orm": "^0.44.5",
-    "eslint": "^9.12.0",
-    "@typescript-eslint/parser": "^8.8.1",
-    "@typescript-eslint/eslint-plugin": "^8.8.1",
-    "typescript-eslint": "^8.8.1",
-    "eslint-config-prettier": "^9.1.0",
-    "hono": "^4.5.0",
-    "ioredis": "^5.8.0",
-    "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
-    "tsup": "^8.2.4",
-    "tsx": "^4.19.1",
-    "typescript": "^5.6.2",
-    "vitest": "^3.2.4",
-    "wrangler": "^4.39.0"
-  },
-  "peerDependencies": {
-    "hono": ">=4.0.0"
-  }
+  "sideEffects": false,
+  "type": "module",
+  "types": "dist/index.d.ts"
 }
