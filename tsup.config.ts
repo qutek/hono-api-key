@@ -8,4 +8,9 @@ export default defineConfig({
   sourcemap: true,
   minify: false,
   target: 'es2020',
+  outExtension({ format }) {
+    return {
+      js: format === 'esm' ? '.mjs' : '.cjs',
+    };
+  },
 });
