@@ -2,14 +2,20 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - "**"
   pull_request:
     branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   test:
     name: Lint and Test Build
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,3 +61,13 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          # This will create a PR when there are changesets to release
+          title: "Version Packages"
+          commit: "chore: version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
