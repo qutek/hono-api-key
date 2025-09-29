@@ -1,6 +1,43 @@
 {
   "name": "hono-api-key",
-  "version": "0.0.0",
+  "version": "0.1.2",
+  "description": "Secure, flexible API key middleware and manager for Hono.",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "clean": "rimraf dist",
+    "dev": "tsup --watch",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "changeset": "changeset",
+    "release": "pnpm build && changeset publish",
+    "examples:basic": "tsx examples/basic.ts",
+    "examples:kv": "wrangler dev --config examples/kv/wrangler.jsonc",
+    "examples:redis": "wrangler dev --config examples/redis/wrangler.jsonc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [
+    "hono",
+    "middleware",
+    "api-key",
+    "security"
+  ],
   "author": "Lafif Astahdziq <hello@lafif.me> (https://lafif.me)",
   "repository": {
     "type": "git",
