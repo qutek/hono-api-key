@@ -92,16 +92,12 @@
       "indexes": {
         "owner_index": {
           "name": "owner_index",
-          "columns": [
-            "ownerId"
-          ],
+          "columns": ["ownerId"],
           "isUnique": false
         },
         "key_index": {
           "name": "key_index",
-          "columns": [
-            "key"
-          ],
+          "columns": ["key"],
           "isUnique": false
         }
       },

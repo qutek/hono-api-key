@@ -43,8 +43,6 @@
     "type": "git",
     "url": "git+https://github.com/qutek/hono-api-key.git"
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
   "devDependencies": {
     "@changesets/cli": "^2.27.7",
     "@hono/node-server": "^1.13.6",
@@ -70,45 +68,5 @@
   },
   "peerDependencies": {
     "hono": ">=4.0.0"
-  },
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "bugs": {
-    "url": "https://github.com/qutek/hono-api-key/issues"
-  },
-  "description": "Secure, flexible API key middleware and manager for Hono.",
-  "files": [
-    "dist"
-  ],
-  "homepage": "https://github.com/qutek/hono-api-key#readme",
-  "keywords": [
-    "hono",
-    "middleware",
-    "api-key",
-    "security"
-  ],
-  "license": "MIT",
-  "scripts": {
-    "build": "tsup",
-    "clean": "rimraf dist",
-    "dev": "tsup --watch",
-    "lint": "eslint .",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "changeset": "changeset",
-    "release": "pnpm build && changeset publish",
-    "examples:basic": "tsx examples/basic.ts",
-    "examples:kv": "wrangler dev --config examples/kv/wrangler.jsonc",
-    "examples:redis": "wrangler dev --config examples/redis/wrangler.jsonc",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
-  },
-  "sideEffects": false,
-  "type": "module",
-  "types": "dist/index.d.ts"
+  }
 }

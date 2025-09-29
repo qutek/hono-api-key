@@ -5,10 +5,11 @@ Secure, flexible API key middleware and manager for Hono. Works in Node, Cloudfl
 <div align="center">
 
 [![tests](https://img.shields.io/github/actions/workflow/status/qutek/hono-api-key/ci.yml)](https://github.com/qutek/hono-api-key/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/hono-api-key.svg)](https://www.npmjs.com/package/hono-api-key "View this project on NPM")
+[![npm version](https://img.shields.io/npm/v/hono-api-key.svg)](https://www.npmjs.com/package/hono-api-key 'View this project on NPM')
 [![Bundle Size](https://img.shields.io/bundlephobia/min/hono-api-key)](https://bundlephobia.com/result?p=hono-api-key)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/hono-api-key)](https://bundlephobia.com/result?p=hono-api-key)
 [![license](https://img.shields.io/npm/l/hono-api-key)](LICENSE)
+
 <!-- [![npm downloads](https://img.shields.io/npm/dm/hono-api-key)](https://www.npmjs.com/package/hono-api-key) -->
 
 </div>

@@ -31,7 +31,7 @@ export class LibsqlAdapter implements StorageAdapter {
       this.client = options.client;
     } else if (options.memory) {
       // Use a shared in-memory database
-      this.client = createClient({ url: ":memory:" });
+      this.client = createClient({ url: ':memory:' });
     } else if (options.config) {
       this.client = createClient(options.config);
     } else if (options.url) {
@@ -123,7 +123,9 @@ export class LibsqlAdapter implements StorageAdapter {
   async checkRateLimit(keyId: string, rateLimit: RateLimitConfig): Promise<boolean> {
     const table = 'api_key_rate_limits';
     // Ensure table exists (idempotent)
-    await this.client.execute(`CREATE TABLE IF NOT EXISTS ${table} (key_id TEXT PRIMARY KEY, window_start INTEGER NOT NULL, count INTEGER NOT NULL)`);
+    await this.client.execute(
+      `CREATE TABLE IF NOT EXISTS ${table} (key_id TEXT PRIMARY KEY, window_start INTEGER NOT NULL, count INTEGER NOT NULL)`,
+    );
     const now = Date.now(); // ms
     const windowMs = rateLimit.windowMs;
     // Try to fetch current window
@@ -163,12 +165,22 @@ export class LibsqlAdapter implements StorageAdapter {
     permissions: row.permissions ? JSON.parse(row.permissions) : {},
     rateLimit: row.rateLimit ? JSON.parse(row.rateLimit) : undefined,
     isActive: !!row.isActive,
-    createdAt: typeof row.createdAt === 'string' ? row.createdAt : new Date(row.createdAt * 1000).toISOString(),
-    lastUsedAt: row.lastUsedAt ? (typeof row.lastUsedAt === 'string' ? row.lastUsedAt : new Date(row.lastUsedAt * 1000).toISOString()) : null,
-    expiresAt: row.expiresAt ? (typeof row.expiresAt === 'string' ? row.expiresAt : new Date(row.expiresAt * 1000).toISOString()) : null,
+    createdAt:
+      typeof row.createdAt === 'string'
+        ? row.createdAt
+        : new Date(row.createdAt * 1000).toISOString(),
+    lastUsedAt: row.lastUsedAt
+      ? typeof row.lastUsedAt === 'string'
+        ? row.lastUsedAt
+        : new Date(row.lastUsedAt * 1000).toISOString()
+      : null,
+    expiresAt: row.expiresAt
+      ? typeof row.expiresAt === 'string'
+        ? row.expiresAt
+        : new Date(row.expiresAt * 1000).toISOString()
+      : null,
     metadata: row.metadata ? JSON.parse(row.metadata) : {},
   });
 }
 
 export default LibsqlAdapter;
-

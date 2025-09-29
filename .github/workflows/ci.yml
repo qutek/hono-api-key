@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - "**"
+      - '**'
   pull_request:
     branches: [main]
 
@@ -68,7 +68,7 @@ jobs:
         uses: changesets/action@v1
         with:
           # This will create a PR when there are changesets to release
-          title: "Version Packages"
-          commit: "chore: version packages"
+          title: 'Version Packages'
+          commit: 'chore: version packages'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

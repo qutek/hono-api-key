@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 
 import { Hono } from 'hono';
 import { apiKeyMiddleware, ApiKeyManager } from '../../../src';

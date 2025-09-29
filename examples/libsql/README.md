@@ -12,18 +12,21 @@ This example demonstrates how to use `hono-api-key` with a custom libSQL adapter
 ## Setup
 
 1. Create a Turso database and get credentials:
+
    ```bash
    turso db create my-api-keys-db
    turso db tokens create my-api-keys-db
    ```
 
 2. Create `.env` file with your Turso credentials:
+
    ```bash
    TURSO_DATABASE_URL=libsql://your-database-name.turso.io
    TURSO_AUTH_TOKEN=your-auth-token
    ```
 
 3. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -37,6 +40,7 @@ This example demonstrates how to use `hono-api-key` with a custom libSQL adapter
 ## Usage
 
 Run the development server:
+
 ```bash
 pnpm dev
 ```
@@ -44,6 +48,7 @@ pnpm dev
 ### Example Routes
 
 1. Create an API key:
+
    ```bash
    curl -X POST http://localhost:8787/keys \
      -H "Content-Type: application/json" \
@@ -51,6 +56,7 @@ pnpm dev
    ```
 
 2. Use the API key:
+
    ```bash
    curl http://localhost:8787/secure \
      -H "x-api-key: your-api-key"
