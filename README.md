@@ -1,4 +1,4 @@
-<h1 align="center"> <code>API Key Manager and Middleware for Hono 🔥</code> </h1>
+<h1 align="center">API Key Manager and Middleware for Hono 🔥</h1>
 
 Secure, flexible API key middleware and manager for Hono. Works in Node, Cloudflare Workers, and edge runtimes. Batteries included adapters (Memory, KV, Redis) and a clean `StorageAdapter` interface for custom backends.
 
@@ -6,11 +6,10 @@ Secure, flexible API key middleware and manager for Hono. Works in Node, Cloudfl
 
 [![tests](https://img.shields.io/github/actions/workflow/status/qutek/hono-api-key/ci.yml)](https://github.com/qutek/hono-api-key/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/hono-api-key.svg)](https://www.npmjs.com/package/hono-api-key 'View this project on NPM')
+[![npm downloads](https://img.shields.io/npm/dm/hono-api-key)](https://www.npmjs.com/package/hono-api-key)
 [![Bundle Size](https://img.shields.io/bundlephobia/min/hono-api-key)](https://bundlephobia.com/result?p=hono-api-key)
 [![Bundle Size](https://img.shields.io/bundlephobia/minzip/hono-api-key)](https://bundlephobia.com/result?p=hono-api-key)
 [![license](https://img.shields.io/npm/l/hono-api-key)](LICENSE)
-
-<!-- [![npm downloads](https://img.shields.io/npm/dm/hono-api-key)](https://www.npmjs.com/package/hono-api-key) -->
 
 </div>
 
@@ -142,7 +141,8 @@ Redis example is in `examples/redis/` and supports Upstash or ioredis.
 - `examples/basic.ts` – Node server with `@hono/node-server`
 - `examples/kv/` – Cloudflare Workers KV example (Wrangler)
 - `examples/redis/` – Redis adapter example (Node/Upstash)
-- [examples/custom-d1/](examples/custom-d1/README.md) – Custom adapter on Cloudflare D1 using Drizzle
+- [examples/custom-d1/](examples/custom-d1/README.md) – Custom adapter with Cloudflare D1 using Drizzle
+- [examples/libsql/](examples/libsql/README.md) – Custom adapter with LibSQL / Turso using Drizzle (thanks to [@darkterminal](https://github.com/darkterminal))
 
 Scripts:
 
